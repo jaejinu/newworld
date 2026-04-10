@@ -1,0 +1,25 @@
+.adBannerArea {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.adBannerArea .adBanner {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.adBannerArea .adBanner .imgBox {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.adBannerArea .adBanner .textBox p {
+    color: #b5b5b5;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-align: center;
+}

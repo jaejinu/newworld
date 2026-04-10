@@ -1,0 +1,311 @@
+/* basic-list */
+
+.basicListItems {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-auto-rows: 1fr;
+    gap: 0;
+    position: relative;    
+}
+.basicListItem > a {
+    display: grid;
+    grid-template-columns: 3.3rem 1fr 12rem;
+    gap: 4rem;    
+    padding: 1rem 0;
+    position: relative;
+    padding-bottom: 2rem;    
+    height: 100%;
+    min-height: 100%;
+    align-items: start;
+}
+
+.basicListItem:first-child > a::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0.1rem;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgb(225, 225, 225) 30%,
+        rgb(225, 225, 225) 70%,
+        transparent 100%
+    );
+    pointer-events: none;
+}
+
+.basicListItem > a::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 0.1rem;
+    background: linear-gradient(
+        to right,
+        transparent 0%,
+        rgb(225, 225, 225) 30%,
+        rgb(225, 225, 225) 70%,
+        transparent 100%
+    );
+    pointer-events: none;
+}
+
+.basicListItem > a:hover .basicListNo {
+    color: #000;
+}
+
+.basicListItem > a:hover .icoBox .ico {
+    animation: ico-img-hover 0.5s ease-in-out;
+}
+
+.basicListNo {
+    font-weight: 700;
+    color: #d5d5d5;
+    font-size: 3.2rem;
+    font-family: "Poppins", sans-serif;
+    font-style: italic;
+    padding-top: 1.8rem;
+    transition: color 0.1s ease-in-out;
+}
+
+.basicListBody {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-top: 1rem;
+}
+
+.basicListTitle {
+    display: block;
+    font-size: 2rem;
+    margin: 0;
+    font-weight: 700;
+    line-height: 120%;
+    letter-spacing: -0.064rem;
+    color: #222;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-height: 4.8rem;
+}
+
+.basicListDate {
+    margin: 0;
+    font-size: 1.6rem;
+    color: var(--muted);
+    font-weight: 400;
+}
+
+.basicListThumb {
+    position: relative;
+    width: 12rem;
+    height: 12rem;
+}
+
+.basicListThumb .imageBox {
+    width: 100%;
+    height: 100%;
+    border-radius: 999.9rem;
+    background: #e5e7eb;
+    position: relative;
+    overflow: hidden;
+}
+
+.basicListThumb .imageBox img {
+    width: 100%;
+    height: 100%;
+    -o-object-fit: cover;
+    object-fit: cover;
+    -o-object-position: center;
+    object-position: center;
+}
+
+.basicListThumb .icoBox {
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: url("/images/common/list-path.svg") center/contain no-repeat;
+    width: 5.9rem;
+    height: 5.8rem;
+}
+
+.basicListThumb .icoBox .ico {
+    display: block;
+    position: relative;
+    transform: translateY(0);
+}
+
+.basicListThumb .icoBox .ico.img {
+    width: 1.7rem;
+    height: 1.7rem;
+    background: url("/images/common/ico-img.svg") center/contain no-repeat;
+    top: 1rem;
+    left: 3rem;
+}
+
+.basicListThumb .icoBox .ico.video {
+    width: 0.9rem;
+    height: 1.1rem;
+    background: url("/images/common/ico-video.svg") center/contain no-repeat;
+    top: 1.4rem;
+    left: 3.6rem;
+}
+
+
+
+/*dark bg*/
+.bgBlack .basicListTitle {
+    color: #fff;
+}
+
+
+
+.slideContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+}
+
+.swiperWrap {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.swiperSlide {
+    width: 100%;    
+}
+
+.swiperItem {
+    display: grid;
+    grid-template-columns: 3.3rem 1fr 12rem;
+    gap: 2.4rem;
+    align-items: start;
+    padding: 1rem 0;
+}
+
+
+
+.basicListBody {
+    min-width: 0;
+}
+
+
+.basicListThumb {
+    flex-shrink: 0;
+}
+
+.imageBox {
+    width: 12rem;
+    height: auto;
+    aspect-ratio: 1;
+    border-radius: 0.4rem;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.imageBox img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.buttonPrev,
+.buttonNext {
+    width: 2.4rem;
+    height: 2.4rem;
+    border: 0;
+    background: rgba(31, 31, 31, 0.8);
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    flex-shrink: 0;
+    transition: background-color 0.3s ease;
+}
+
+.buttonPrev:hover,
+.buttonNext:hover {
+    background: rgb(31, 31, 31);
+}
+
+.buttonPrev:hover svg path,
+.buttonNext:hover svg path {
+    fill-opacity: 1;
+}
+
+.buttonPrev svg,
+.buttonNext svg {
+    width: 100%;
+    height: 100%;
+}
+
+.buttonPrev svg path,
+.buttonNext svg path {
+    transition: fill-opacity 0.3s ease;
+}
+
+@media all and (max-width: 1280px) {
+    .basicListItem > a {
+        gap: 3rem;
+    }
+}
+
+@media all and (max-width: 768px) {
+    .swiperItem {
+        position: relative;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+   
+    .basicListItem > a {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .basicListNo {
+        padding-top: 0;
+    }
+
+    .basicListBody {
+        width: calc(100% - 12rem);
+        gap: 1rem;
+    }
+
+    .basicListThumb {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 10rem;
+        height: 10rem;
+    }
+
+    .basicListTitle {
+        font-size: 1.8rem;
+    }
+
+    .basicListDate {
+        font-size: 1.2rem;
+    }
+
+    .bgBlack .basicListNo {
+        color: rgba(213, 213, 213, 0.2);
+    }
+}

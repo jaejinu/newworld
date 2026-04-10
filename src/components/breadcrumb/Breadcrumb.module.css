@@ -1,0 +1,41 @@
+.subNavi {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #777;
+    margin-bottom: 1.6rem;
+}
+.white {
+    color: #fff;
+}
+.white svg path {
+    fill: #fff;
+}
+.subNavi a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+.subNavi a p {
+    margin-left: 1.1rem;
+}
+.subNavi li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+@media all and (max-width: 768px) {
+    .subNavi {
+        gap: 0.6rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .subNavi a {
+        font-size: 1.4rem;
+    }
+
+    .subNavi a p {
+        margin-left: 0.6rem;
+    }
+
+}

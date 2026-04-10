@@ -1,0 +1,277 @@
+/* 히어로 */
+  .hero {
+    padding: 6rem 0;
+    background: #fff;
+    transition: padding 0.4s ease-in-out;
+  }
+  
+  .heroInner {
+    display: grid;
+    grid-template-columns: 68rem 1fr;
+    gap: 6rem;    
+  }
+  
+  .heroFeature {
+    background: #fff;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 680/480;
+  }
+  
+  .heroFeatureMain {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.6));
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    padding: 4.8rem 4rem;
+    transition: padding 0.4s ease-in-out;
+  }
+  
+  .heroFeatureImage {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 0;
+    transition: transform 0.4s ease-in-out;
+  }
+  
+  .heroFeatureImage::before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.6) 100%);
+    z-index: 1;
+  }
+  
+  .heroFeatureText {
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .heroFeatureLabel {
+    display: inline-flex;
+    padding: 0.5rem 1.2rem;
+    border-radius: 99.9rem;
+    border: 0.1rem solid var(--blue);
+    background: #fff;
+    color: var(--blue);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.08rem;
+    width: -moz-fit-content;
+    width: fit-content;
+    margin-bottom: 1rem;
+  }
+  
+  .heroFeatureTitle {
+    margin: 0 0 2rem;
+    font-size: 3.6rem;
+    line-height: 120%;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: -0.144rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .heroFeatureInfo {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .heroFeatureAuthor {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .heroFeatureAuthorImg {
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 999.9rem;
+    background: #fff;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+    padding: 0.58rem;
+  }
+  
+  .heroFeatureAuthorImg::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: url("/images/common/logo-small.svg") center/cover no-repeat;
+    border-radius: 999.9rem;
+  }
+  
+  .heroFeatureAuthorInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  
+  .heroFeatureAuthorName {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .heroFeatureDate {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #fff;
+    font-weight: 400;
+  }
+  
+  .heroFeatureActions {
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .heroActionBtn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.8rem 1.2rem;
+    border-radius: 99.9rem;
+    border: 0;
+    background: rgba(255, 255, 255, 0.25);
+    -webkit-backdrop-filter: blur(0.2rem);
+    backdrop-filter: blur(0.2rem);
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 400;
+    cursor: pointer;
+    white-space: nowrap;
+    position: relative;
+    z-index: 3;
+    transition: background 0.1s ease-in-out, -webkit-backdrop-filter 0.1s ease-in-out;
+    transition: background 0.1s ease-in-out, backdrop-filter 0.1s ease-in-out;
+    transition: background 0.1s ease-in-out, backdrop-filter 0.1s ease-in-out, -webkit-backdrop-filter 0.1s ease-in-out;
+  }
+  
+  .heroActionBtn:hover {
+    background: rgba(255, 255, 255, 0.5);
+    -webkit-backdrop-filter: blur(0.2rem);
+    backdrop-filter: blur(0.2rem);
+  }
+  
+  .heroActionBtn.heroActionLink {
+    padding: 0.6rem;
+    width: 2.8rem;
+    justify-content: center;
+  }
+  
+  .heroActionIcon {
+    width: 1.6rem;
+    height: 1.6rem;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .heroActionText {
+    font-size: 1.6rem;
+    color: #fff;
+  }
+  @media (max-width: 1280px) {
+    .hero {
+      padding: 4.5rem 0;
+    }
+  
+    .heroInner {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 3rem;
+    }
+  
+    .heroFeatureMain {
+      padding: 3rem;
+    }
+  
+    .heroFeatureLabel {
+      font-size: 1.8rem;
+    }
+  
+    .heroFeatureTitle {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+    }
+  
+    .heroFeatureAuthorName,
+    .heroActionText {
+      font-size: 1.5rem;
+    }
+  }
+  @media all and (max-width: 1024px) {
+    .hero {
+      padding: 3rem 0;
+    }
+  
+    .heroInner {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+  
+    .heroFeature {
+      height: auto;
+      aspect-ratio: 337.5/238.24;
+    }
+  
+  }
+
+  @media all and (max-width: 768px) {
+    .heroInner {
+        gap: 2rem;
+    }
+    
+    .heroFeatureMain {
+        padding: 2rem;
+    }
+
+    .heroFeatureAuthorImg {
+        width: 3.6rem;
+        height: 3.6rem;
+    }
+
+    .heroFeatureLabel {
+        font-size: 1.6rem;
+    }
+
+    .heroFeatureTitle {
+        font-size: 2.4rem;
+        margin-bottom: 1rem;
+    }
+
+    .heroFeatureAuthorName,
+    .heroActionText {
+        font-size: 1.4rem;
+    }
+  }

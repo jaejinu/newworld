@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Authentication ───
+
+model Admin {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @db.VarChar(255)
+  name         String   @db.VarChar(100)
+  role         String   @default("admin") @db.VarChar(50)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique @db.VarChar(500)
+  adminId   Int
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([adminId])
+  @@index([expiresAt])
+}
+
+// ─── Content ───
+
+model Category {
+  id        Int        @id @default(autoincrement())
+  name      String     @db.VarChar(200)
+  slug      String     @unique @db.VarChar(200)
+  parentId  Int?
+  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryTree")
+  sortOrder Int        @default(0)
+  isActive  Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  posts Post[]
+
+  @@index([parentId])
+}
+
+model Tag {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(100)
+  slug      String   @unique @db.VarChar(100)
+  createdAt DateTime @default(now())
+
+  posts PostTag[]
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(500)
+  slug        String   @db.VarChar(500)
+  content     String   @db.LongText
+  excerpt     String?  @db.Text
+  thumbnail   String?  @db.VarChar(500)
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id])
+  recommended Boolean  @default(false)
+  noticePost  Boolean  @default(false)
+  editorPick  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  viewCount   Int      @default(0)
+  publishedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tags     PostTag[]
+  comments Comment[]
+  seoMeta  SeoMeta?
+
+  @@unique([categoryId, slug])
+  @@index([categoryId])
+  @@index([isActive, publishedAt])
+  @@index([recommended])
+  @@index([editorPick])
+  @@index([noticePost])
+}
+
+model PostTag {
+  postId Int
+  tagId  Int
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag    Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  postId    Int
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parentId  Int?
+  parent    Comment?  @relation("CommentTree", fields: [parentId], references: [id])
+  children  Comment[] @relation("CommentTree")
+  author    String    @db.VarChar(100)
+  email     String    @db.VarChar(255)
+  phone     String?   @db.VarChar(20)
+  content   String    @db.Text
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+
+  @@index([postId])
+  @@index([parentId])
+}
+
+model Image {
+  id           Int      @id @default(autoincrement())
+  originalName String   @db.VarChar(500)
+  fileName     String   @db.VarChar(500)
+  path         String   @db.VarChar(1000)
+  mimeType     String   @db.VarChar(100)
+  size         Int
+  altText      String?  @db.VarChar(500)
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+// ─── SEO/AEO/GEO ───
+
+model SeoMeta {
+  id             Int     @id @default(autoincrement())
+  postId         Int?    @unique
+  post           Post?   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  pageIdentifier String? @unique @db.VarChar(200)
+
+  // SEO
+  metaTitle       String? @db.VarChar(200)
+  metaDescription String? @db.VarChar(500)
+  canonicalUrl    String? @db.VarChar(500)
+  ogTitle         String? @db.VarChar(200)
+  ogDescription   String? @db.VarChar(500)
+  ogImage         String? @db.VarChar(500)
+  ogType          String? @default("article") @db.VarChar(50)
+  twitterCard     String? @default("summary_large_image") @db.VarChar(50)
+  robotsMeta      String? @default("index, follow") @db.VarChar(100)
+  focusKeyword    String? @db.VarChar(200)
+
+  // AEO
+  jsonLdType     String?  @db.VarChar(100)
+  jsonLdData     String?  @db.LongText
+  faqItems       String?  @db.LongText
+  howToSteps     String?  @db.LongText
+  tldrSummary    String?  @db.Text
+  lastReviewedAt DateTime?
+
+  // GEO
+  localBusinessData String? @db.LongText
+  serviceArea       String? @db.VarChar(500)
+  localKeywords     String? @db.Text
+
+  // Cached scores
+  seoScore     Int?    @default(0)
+  aeoScore     Int?    @default(0)
+  geoScore     Int?    @default(0)
+  scoreDetails String? @db.LongText
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

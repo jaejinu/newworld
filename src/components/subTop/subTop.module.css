@@ -1,0 +1,61 @@
+.subTop {
+    position: relative;
+    background: #303030;
+    height: 24rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.bgMedia,
+.bgImage {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bgImage {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.bgOverlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+}
+
+.subTop :global(.section-inner) {
+    position: relative;
+    z-index: 1;
+}
+
+.subTop .subNavi {
+    color: #fff;
+}
+
+.subTop .subTitle {
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+
+
+@media all and (max-width: 768px) {
+    .subTop {
+        height: 16rem;
+    }
+    .subTop .txtWrap {
+        gap: 1rem;
+    }
+    
+    .subTop .subTitle {
+        font-size: 2.4rem;
+    }  
+}

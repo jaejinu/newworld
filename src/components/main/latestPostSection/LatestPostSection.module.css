@@ -1,0 +1,8 @@
+.latestPostSection {
+    padding: 6rem;
+}
+@media (max-width: 768px) {
+    .latestPostSection {
+        padding: 3rem 0 6rem 0;
+    }
+}

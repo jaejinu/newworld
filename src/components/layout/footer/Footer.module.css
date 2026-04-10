@@ -1,0 +1,170 @@
+/* 푸터 */
+.siteFooter {
+    margin-top: 0;
+    color: #fff;
+}
+
+.footerTop {
+    background: #222;
+    padding: 4rem 0;
+}
+
+.footerInner {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    align-items: flex-start;
+    max-width: 128rem;
+    margin: 0 auto;    
+}
+
+.footerInfo {
+    flex: 1;
+}
+
+.footerLogo {
+    width: 20rem;
+    height: 5.3rem;
+    margin-bottom: 1.6rem;
+    border-radius: 0.4rem;
+}
+
+.footerLogo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.footerTextGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    font-size: 1.6rem;
+    color: #929292;
+    letter-spacing: -0.04rem;
+    line-height: 2.88rem;
+}
+
+.footerTextGroup > div {
+    display: flex;
+    gap: 2rem;
+}
+
+.footerText {
+    margin: 0;
+    display: inline;
+}
+
+.sectionInner {
+    max-width: 128rem;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.footerBottom {
+    background: #191919;
+    padding: 2rem 0;
+}
+
+.footerBottomInner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footerCopy {
+    margin: 0;
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 400;
+}
+
+.footerSocial {
+    display: flex;
+    gap: 1rem;
+}
+
+.footerSocialBtn {
+    display: flex;
+    width: 3rem;
+    height: 3rem;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    border-radius: 0.6rem;
+    border: 1px solid #444;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(153, 153, 153, 0.1) 100%);
+    transition: border-color 0.3s ease;
+}
+
+.footerSocialBtn svg path {
+    transition: fill-opacity 0.3s ease;
+}
+
+.footerSocialBtn:hover {
+    border-color: #fff;
+}
+
+.footerSocialBtn:hover svg path {
+    fill-opacity: 1;
+}
+
+.footerLatest {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    max-width: 48.9rem;
+}
+
+
+@media all and (max-width: 1024px) {
+    .footerInner {
+        flex-wrap: wrap;
+        gap: 4rem;
+    }
+    .footerInfo {
+        order: 1;
+    }
+    .footerLatest {
+        width: 100%;
+        min-width: 0;
+    }
+}
+@media all and (max-width: 768px) {
+    
+    .footerSwiper .footerSwiper-item {
+        position: relative;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .footerSwiper .footerSwiper-item .basicListNo {
+        color: rgba(213, 213, 213, 0.2);
+    }
+
+    .footerTextGroup > div {
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 0;
+    }
+
+    .footerText {
+        display: block;
+        width: 100%;
+        height: 2.9rem;
+        font-size: 1.2rem;
+    }
+
+    .footerBottomInner {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .footerCopy {
+        width: 100%;
+        font-size: 1.2rem;
+    }
+}

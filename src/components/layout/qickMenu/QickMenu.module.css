@@ -1,0 +1,95 @@
+.quickMenu {
+    position: fixed;
+    top: calc(var(--header-inner) + var(--gnb) + 20vh);
+    right: 0;
+    box-shadow: 0 -0.1rem 0.4rem rgba(0, 0, 0, 0.1);
+    padding: 2.4rem 1.6rem;
+    border-radius: 10px 0 0 10px;
+    background: #fff;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.15);
+    z-index: 5;
+    transform: translateX(100%);
+    opacity: 0;
+    transition:
+        opacity 0.3s ease,
+        transform 0.6s ease;
+}
+
+:global(html.is-fixed) .quickMenu {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.quickMenu ul {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+}
+
+.quickMenu ul li {
+    text-align: center;
+    padding-bottom: 1.6rem;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.quickMenu ul li:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.quickMenu ul li a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    color: #444;
+    font-size: 1.4rem;
+    line-height: 140%;
+    letter-spacing: -0.28px;
+    transition: color 0.3s ease;
+}
+
+.quickMenu ul li a:hover {
+    color: var(--blue);
+}
+
+.quickMenu ul li i {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.iconEffect {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    pointer-events: none;
+    z-index: 1;
+    max-width: none;
+}
+
+.menuOnline .iconEffect {
+    left: calc(50% + 0.8rem);
+    top: calc(50% - 0.8rem);
+}
+.menuTop .iconEffect,
+.menuCall .iconEffect,
+.menuReserve .iconEffect{
+    left: calc(50% + 0.6rem);
+    top: calc(50% - 0.6rem);
+}
+
+
+@media (max-width: 1280px) {
+    .quickMenu {
+        pointer-events: none;
+    }
+
+    html:global(.is-fixed) .quickMenu {
+        opacity: 0;
+    }
+}

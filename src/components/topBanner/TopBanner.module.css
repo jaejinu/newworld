@@ -1,0 +1,25 @@
+.topBanner {
+    width: 100%;
+    aspect-ratio: 1920/70;
+    overflow: hidden;
+    background-color: #ececec;        
+    transition: height 0.3s ease;
+    height: var(--top-banner-height);
+}
+.topBanner a {
+    display: block;
+    width: 100%;
+    height: max-content;
+}
+.topBanner a img {
+    width: 100%;    
+    height: auto;
+}
+:global(html.is-fixed) .topBanner {
+    height: 0;
+}
+@media (max-width: 768px) {
+    .topBanner {
+        aspect-ratio: 500/53;
+    }
+}

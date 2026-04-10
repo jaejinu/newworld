@@ -1,0 +1,49 @@
+/* 메인 피드 */
+.feed {
+    padding: 6rem 0;
+}
+
+.feed-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 80rem) minmax(42rem, 1fr);
+    gap: 6rem;
+    align-items: flex-start;
+}
+
+/* 오른쪽 사이드 */
+.sticky-area {
+    display: grid;
+    gap: 2rem;
+    position: sticky;
+    top: calc(var(--gnb) + var(--header-inner) + 3rem);
+    transition: top 0.65s ease;
+  }
+  
+.sticky-area.scroll-down {
+    top: 3rem;
+}
+
+@media (max-width: 1280px) {
+    .feed-grid {
+        gap: 4rem;
+        grid-template-columns: minmax(0, 1.2fr) minmax(32rem, 0.8fr);
+    }
+}
+@media (max-width: 1024px) {
+    .feed-grid {
+        display: block;
+    }
+    .sticky-area {
+        position: static;
+        margin-top: 6rem;
+    }
+    
+    .feed-grid {
+        display: block;
+    }
+}
+@media (max-width: 768px) {
+    .feed {
+        padding: 3rem 0 6rem 0;
+    }
+}
