@@ -1,0 +1,134 @@
+name: 블루그린 배포
+
+# ──────────────────────────────────────────────
+# 브랜치별 서버 자동 배포 (블루그린)
+#
+# 새 브랜치/서버 추가 방법:
+# 1. 아래 branches에 브랜치명 추가
+# 2. branch-config 단계의 매핑에 추가
+# 3. GitHub Secrets에 해당 서버 정보 등록:
+#    - {PREFIX}_SSH_HOST : 서버 IP
+#    - {PREFIX}_SSH_USER : SSH 접속 유저
+#    - {PREFIX}_SSH_KEY  : SSH 비밀키
+#    - {PREFIX}_DOMAIN   : 도메인명
+#    - {PREFIX}_DEPLOY_PATH : 서버 내 프로젝트 경로
+# ──────────────────────────────────────────────
+
+on:
+  push:
+    branches:
+      - web4-1
+      - web1-1
+      # 새 브랜치 추가 시 여기에 추가
+
+env:
+  DOCKER_BUILDKIT: 1
+
+jobs:
+  deploy:
+    name: 배포 (${{ github.ref_name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: 브랜치별 서버 설정 매핑
+        id: config
+        run: |
+          BRANCH="${{ github.ref_name }}"
+
+          # ── 브랜치 → 서버 매핑 ──
+          # 새 서버 추가 시 case문에 추가하면 됨
+          case "$BRANCH" in
+            web4-1)
+              echo "prefix=WEB4_1" >> $GITHUB_OUTPUT
+              ;;
+            web1-1)
+              echo "prefix=WEB1_1" >> $GITHUB_OUTPUT
+              ;;
+            # 예시: 새 브랜치 추가
+            # web2-1)
+            #   echo "prefix=WEB2_1" >> $GITHUB_OUTPUT
+            #   ;;
+            *)
+              echo "::error::알 수 없는 브랜치: $BRANCH"
+              exit 1
+              ;;
+          esac
+
+      - name: 서버 시크릿 확인
+        env:
+          SSH_HOST: ${{ secrets[format('{0}_SSH_HOST', steps.config.outputs.prefix)] }}
+          SSH_USER: ${{ secrets[format('{0}_SSH_USER', steps.config.outputs.prefix)] }}
+          SSH_KEY: ${{ secrets[format('{0}_SSH_KEY', steps.config.outputs.prefix)] }}
+          DOMAIN: ${{ secrets[format('{0}_DOMAIN', steps.config.outputs.prefix)] }}
+          DEPLOY_PATH: ${{ secrets[format('{0}_DEPLOY_PATH', steps.config.outputs.prefix)] }}
+        run: |
+          if [ -z "$SSH_HOST" ] || [ -z "$SSH_USER" ] || [ -z "$SSH_KEY" ]; then
+            echo "::error::${{ steps.config.outputs.prefix }} 시크릿이 설정되지 않았습니다."
+            echo "필요한 시크릿: ${{ steps.config.outputs.prefix }}_SSH_HOST, _SSH_USER, _SSH_KEY, _DOMAIN, _DEPLOY_PATH"
+            exit 1
+          fi
+          echo "✓ 서버 설정 확인 완료: $SSH_HOST ($DOMAIN)"
+
+      - name: SSH 키 설정
+        env:
+          SSH_KEY: ${{ secrets[format('{0}_SSH_KEY', steps.config.outputs.prefix)] }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+          SSH_HOST="${{ secrets[format('{0}_SSH_HOST', steps.config.outputs.prefix)] }}"
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: 서버에 코드 배포 및 블루그린 전환
+        env:
+          SSH_HOST: ${{ secrets[format('{0}_SSH_HOST', steps.config.outputs.prefix)] }}
+          SSH_USER: ${{ secrets[format('{0}_SSH_USER', steps.config.outputs.prefix)] }}
+          DOMAIN: ${{ secrets[format('{0}_DOMAIN', steps.config.outputs.prefix)] }}
+          DEPLOY_PATH: ${{ secrets[format('{0}_DEPLOY_PATH', steps.config.outputs.prefix)] }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no "${SSH_USER}@${SSH_HOST}" << ENDSSH
+            set -euo pipefail
+
+            echo "── 코드 업데이트 ──"
+            cd "${DEPLOY_PATH}"
+
+            # git 최신화
+            git fetch origin "${BRANCH}"
+            git checkout "${BRANCH}"
+            git reset --hard "origin/${BRANCH}"
+
+            echo "── 블루그린 배포 실행 ──"
+            chmod +x scripts/deploy-blue-green.sh
+            ./scripts/deploy-blue-green.sh "${DOMAIN}"
+
+            echo "── 배포 완료 ──"
+          ENDSSH
+
+      - name: SSH 키 정리
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
+
+      - name: 배포 결과 요약
+        if: success()
+        run: |
+          echo "## ✅ 배포 성공" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| 항목 | 값 |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-----|" >> $GITHUB_STEP_SUMMARY
+          echo "| 브랜치 | \`${{ github.ref_name }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| 서버 | \`${{ secrets[format('{0}_SSH_HOST', steps.config.outputs.prefix)] }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| 도메인 | \`${{ secrets[format('{0}_DOMAIN', steps.config.outputs.prefix)] }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| 커밋 | \`${{ github.sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| 시각 | $(date -u '+%Y-%m-%d %H:%M:%S UTC') |" >> $GITHUB_STEP_SUMMARY
+
+      - name: 배포 실패 알림
+        if: failure()
+        run: |
+          echo "## ❌ 배포 실패" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- 브랜치: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- 커밋: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- 로그를 확인해주세요." >> $GITHUB_STEP_SUMMARY
