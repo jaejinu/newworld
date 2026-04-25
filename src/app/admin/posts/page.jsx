@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import AdminGuard from '@/components/admin/common/AdminGuard';
 import { apiGet, apiPatch } from '@/lib/api/client';
@@ -9,22 +9,33 @@ export default function PostsListPage() {
   const [meta, setMeta] = useState({});
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [categorySlug, setCategorySlug] = useState('');
   const [isActive, setIsActive] = useState('');
   const [itemType, setItemType] = useState('');
   const [categories, setCategories] = useState([]);
+  const debounceRef = useRef(null);
 
   useEffect(() => {
     apiGet('/api/admin/categories').then(data => setCategories(data || []));
   }, []);
 
   useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 300);
+    return () => clearTimeout(debounceRef.current);
+  }, [search]);
+
+  useEffect(() => {
     fetchPosts();
-  }, [page, search, categorySlug, isActive, itemType]);
+  }, [page, debouncedSearch, categorySlug, isActive, itemType]);
 
   async function fetchPosts() {
     const params = new URLSearchParams({ page, perPage: 15 });
-    if (search) params.set('search', search);
+    if (debouncedSearch) params.set('search', debouncedSearch);
     if (categorySlug) params.set('categorySlug', categorySlug);
     if (isActive !== '') params.set('isActive', isActive);
     if (itemType) params.set('itemType', itemType);
@@ -67,7 +78,7 @@ export default function PostsListPage() {
 
       <div className="admin-card">
         <div className="admin-filters">
-          <input type="text" placeholder="제목 검색..." value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} style={{ padding: '0.6rem 1rem', border: '1px solid var(--admin-border)', borderRadius: '8px', fontSize: '1.34rem', outline: 'none', minWidth: '200px' }} />
+          <input type="text" placeholder="제목 검색..." value={search} onChange={e => setSearch(e.target.value)} style={{ padding: '0.6rem 1rem', border: '1px solid var(--admin-border)', borderRadius: '8px', fontSize: '1.34rem', outline: 'none', minWidth: '200px' }} />
           <select value={categorySlug} onChange={e => { setCategorySlug(e.target.value); setPage(1); }}>
             <option value="">전체 카테고리</option>
             {flatCategories().map(c => <option key={c.id} value={c.slug}>{c.name}</option>)}

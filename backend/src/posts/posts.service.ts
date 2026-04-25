@@ -125,36 +125,39 @@ export class PostsService {
       throw new NotFoundException(`Post #${id} not found`);
     }
 
-    const { tags, ...postData } = dto as any;
+    const { tags, ...postData } = dto;
 
-    if (tags !== undefined) {
-      await this.prisma.postTag.deleteMany({ where: { postId: id } });
+    return this.prisma.$transaction(async (tx) => {
+      if (tags !== undefined) {
+        await tx.postTag.deleteMany({ where: { postId: id } });
 
-      if (tags.length > 0) {
-        for (const tagName of tags) {
-          const slug = slugify(tagName);
-          const tag = await this.prisma.tag.upsert({
-            where: { slug },
-            update: {},
-            create: { name: tagName, slug },
-          });
-          await this.prisma.postTag.create({
-            data: { postId: id, tagId: tag.id },
+        if (tags.length > 0) {
+          const tagRecords = await Promise.all(
+            tags.map(async (tagName) => {
+              const slug = slugify(tagName);
+              return tx.tag.upsert({
+                where: { slug },
+                update: {},
+                create: { name: tagName, slug },
+              });
+            }),
+          );
+
+          await tx.postTag.createMany({
+            data: tagRecords.map((tag) => ({ postId: id, tagId: tag.id })),
           });
         }
       }
-    }
 
-    const post = await this.prisma.post.update({
-      where: { id },
-      data: postData,
-      include: {
-        category: true,
-        tags: { include: { tag: true } },
-      },
+      return tx.post.update({
+        where: { id },
+        data: postData,
+        include: {
+          category: true,
+          tags: { include: { tag: true } },
+        },
+      });
     });
-
-    return post;
   }
 
   async toggleActive(id: number) {

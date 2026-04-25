@@ -13,6 +13,7 @@ import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { QueryPostsDto } from './dto/query-posts.dto';
+import { UpdateFlagsDto } from './dto/update-flags.dto';
 import { JwtAuthGuard } from '../auth/auth.guard';
 
 @Controller('api/admin/posts')
@@ -48,7 +49,7 @@ export class PostsController {
   @Patch(':id/flags')
   updateFlags(
     @Param('id', ParseIntPipe) id: number,
-    @Body() flags: { recommended?: boolean; noticePost?: boolean; editorPick?: boolean },
+    @Body() flags: UpdateFlagsDto,
   ) {
     return this.postsService.updateFlags(id, flags);
   }

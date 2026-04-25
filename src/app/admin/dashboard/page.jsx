@@ -65,7 +65,7 @@ export default function DashboardPage() {
                   <td><span className={`admin-score ${getScoreClass(post.seoScore)}`}>{post.seoScore || 0}</span></td>
                   <td><span className={`admin-score ${getScoreClass(post.aeoScore)}`}>{post.aeoScore || 0}</span></td>
                   <td><span className={`admin-score ${getScoreClass(post.geoScore)}`}>{post.geoScore || 0}</span></td>
-                  <td><span className={`admin-score ${getScoreClass(((post.seoScore||0)+(post.aeoScore||0)+(post.geoScore||0))/3)}`}>{(post.seoScore||0)+(post.aeoScore||0)+(post.geoScore||0)}</span></td>
+                  <td><span className={`admin-score ${getScoreClass(Math.round(((post.seoScore||0)+(post.aeoScore||0)+(post.geoScore||0))/3))}`}>{Math.round(((post.seoScore||0)+(post.aeoScore||0)+(post.geoScore||0))/3)}</span></td>
                 </tr>
               ))}
             </tbody>

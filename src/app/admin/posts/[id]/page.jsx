@@ -15,6 +15,7 @@ export default function EditPostPage() {
   const [categories, setCategories] = useState([]);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
 
   const [form, setForm] = useState({
     title: '',
@@ -43,14 +44,24 @@ export default function EditPostPage() {
           categoryId: post.categoryId || post.category?.id || '',
           content: post.content || '',
           thumbnail: post.thumbnail || '',
-          tags: (post.tags || []).map(t => typeof t === 'string' ? t : t.name || '').filter(Boolean),
+          tags: (post.tags || []).map(t => {
+            if (typeof t === 'string') return t;
+            if (t?.tag?.name) return t.tag.name;
+            if (t?.name) return t.name;
+            return '';
+          }).filter(Boolean),
           recommended: post.recommended || false,
           noticePost: post.noticePost || false,
           editorPick: post.editorPick || false,
         });
+      } else {
+        setLoadError(true);
       }
       setLoading(false);
-    }).catch(() => setLoading(false));
+    }).catch(() => {
+      setLoadError(true);
+      setLoading(false);
+    });
   }, [postId]);
 
   function flatCategories() {
@@ -124,6 +135,22 @@ export default function EditPostPage() {
         </div>
         <div className="admin-card" style={{ textAlign: 'center', padding: '40px' }}>
           로딩 중...
+        </div>
+      </AdminGuard>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <AdminGuard>
+        <div className="admin-page-header">
+          <h1>게시글 수정</h1>
+        </div>
+        <div className="admin-card" style={{ textAlign: 'center', padding: '40px' }}>
+          <p>게시글을 불러오는데 실패했습니다.</p>
+          <button onClick={() => router.push('/admin/posts')} className="admin-btn" style={{ marginTop: '16px' }}>
+            목록으로 돌아가기
+          </button>
         </div>
       </AdminGuard>
     );

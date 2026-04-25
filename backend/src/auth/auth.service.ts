@@ -62,37 +62,37 @@ export class AuthService {
   }
 
   async refreshToken(token: string) {
-    const storedToken = await this.prisma.refreshToken.findUnique({
-      where: { token },
-      include: { admin: true },
-    });
+    return this.prisma.$transaction(async (tx) => {
+      const storedToken = await tx.refreshToken.findUnique({
+        where: { token },
+        include: { admin: true },
+      });
 
-    if (!storedToken) {
-      throw new UnauthorizedException('Invalid refresh token');
-    }
+      if (!storedToken) {
+        throw new UnauthorizedException('Invalid refresh token');
+      }
 
-    if (storedToken.expiresAt < new Date()) {
-      await this.prisma.refreshToken.delete({
+      // 즉시 삭제하여 동일 토큰 재사용 방지
+      await tx.refreshToken.delete({
         where: { id: storedToken.id },
       });
-      throw new UnauthorizedException('Refresh token has expired');
-    }
 
-    if (!storedToken.admin.isActive) {
-      throw new UnauthorizedException('Admin account is inactive');
-    }
+      if (storedToken.expiresAt < new Date()) {
+        throw new UnauthorizedException('Refresh token has expired');
+      }
 
-    // Delete old refresh token
-    await this.prisma.refreshToken.delete({
-      where: { id: storedToken.id },
-    });
+      if (!storedToken.admin.isActive) {
+        throw new UnauthorizedException('Admin account is inactive');
+      }
 
-    // Generate new token pair
-    return this.login({
-      id: storedToken.admin.id,
-      email: storedToken.admin.email,
-      role: storedToken.admin.role,
-    });
+      return storedToken;
+    }).then((storedToken) =>
+      this.login({
+        id: storedToken.admin.id,
+        email: storedToken.admin.email,
+        role: storedToken.admin.role,
+      }),
+    );
   }
 
   async logout(token: string) {

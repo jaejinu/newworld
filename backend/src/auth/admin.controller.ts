@@ -5,6 +5,9 @@ import {
   Body,
   UseGuards,
   Req,
+  BadRequestException,
+  UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtAuthGuard } from './auth.guard';
 import { PrismaService } from '../prisma/prisma.service';
@@ -33,11 +36,15 @@ export class AdminController {
     }
 
     if (body.currentPassword && body.newPassword) {
+      if (body.newPassword.length < 6) {
+        throw new BadRequestException('새 비밀번호는 6자 이상이어야 합니다');
+      }
+
       const admin = await this.prisma.admin.findUnique({ where: { id: req.user.id } });
-      if (!admin) throw new Error('Admin not found');
+      if (!admin) throw new NotFoundException('관리자를 찾을 수 없습니다');
 
       const valid = await bcrypt.compare(body.currentPassword, admin.passwordHash);
-      if (!valid) throw new Error('Current password is incorrect');
+      if (!valid) throw new UnauthorizedException('현재 비밀번호가 일치하지 않습니다');
 
       data.passwordHash = await bcrypt.hash(body.newPassword, 10);
     }

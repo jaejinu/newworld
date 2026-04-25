@@ -58,10 +58,10 @@ export class UploadController {
     @Query('page') page?: string,
     @Query('perPage') perPage?: string,
   ) {
-    return this.uploadService.findAll(
-      page ? parseInt(page, 10) : 1,
-      perPage ? parseInt(perPage, 10) : 20,
-    );
+    const pageNum = Math.max(1, parseInt(page, 10) || 1);
+    const perPageNum = Math.min(100, Math.max(1, parseInt(perPage, 10) || 20));
+
+    return this.uploadService.findAll(pageNum, perPageNum);
   }
 
   @Delete('images/:id')

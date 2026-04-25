@@ -25,7 +25,10 @@ export class TagsService {
   }
 
   async create(dto: CreateTagDto) {
-    const slug = dto.name.toLowerCase().replace(/\s+/g, '-');
+    const slug = dto.name
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9\-\uac00-\ud7a3]/g, '');
 
     return this.prisma.tag.create({
       data: {
